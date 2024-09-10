@@ -10,28 +10,28 @@
 
 ### Answer 1-
 
-- bash commands:
+bash commands:
 
-  ```bash
-  cd homework/
-  mkdir dir1 dir2 dir3
-  ls -l
-  ```
+```bash
+cd homework/
+mkdir dir1 dir2 dir3
+ls -l
+```
 
-  output:
-  ![alt text](image-1.png)
+output:
+![alt text](image-1.png)
 
-- bash commands:
+bash commands:
 
-  ```bash
-  touch dir1/file1.txt dir1/file2.txt dir1/file3.txt
+```bash
+touch dir1/file1.txt dir1/file2.txt dir1/file3.txt
 
-  #print results
-  ls -l ./dir1
-  ```
+#print results
+ls -l ./dir1
+```
 
-  output:
-  ![alt text](image-2.png)
+output:
+![alt text](image-2.png)
 
 ### Answer 2-
 
@@ -62,20 +62,20 @@ output:
 
 ### Answer 2-
 
-- bash commands:
+bash commands:
 
-  ```bash
-  find ~/homework -type f
-  ```
+```bash
+find ~/homework -type f
+```
 
-  output:
-  ![alt text](image-4.png)
+output:
+![alt text](image-4.png)
 
-- bash commands:
+bash commands:
 
-  ```bash
-    find ~/homework -type f  -mtime -7
-  ```
+```bash
+  find ~/homework -type f  -mtime -7
+```
 
-  output:
-  ![alt text](image-6.png)
+output:
+![alt text](image-6.png)
