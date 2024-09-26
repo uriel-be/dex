@@ -2,7 +2,7 @@
 
 ## Task 1:
 
-- [Dockerfile](/web/Dockerfile)
+- [Dockerfile](./web/Dockerfile)
 - localhost:8080 screenshot:
   ![alt](web/task1-result.png)
 
