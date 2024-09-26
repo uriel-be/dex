@@ -1,0 +1,16 @@
+version: '3'
+services:
+  web:
+    container_name: web
+    build: web
+    ports:
+      - 8080:80
+    networks:
+      - net
+  redis:
+    image: redis
+    container_name: redis
+    networks:
+      - net
+networks:
+  net:
