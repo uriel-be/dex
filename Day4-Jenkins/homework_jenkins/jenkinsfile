@@ -1,0 +1,99 @@
+pipeline {
+    agent any
+    environment{
+        DOCKER_REGISTRY='https://index.docker.io/v1/'
+        DOCKER_CARDENTIALS_ID='docker-hub-credentials'
+        DOCKER_IMAGE_TAG="${env.JOB_NAME}_${env.BUILD_NUMBER}"
+    }
+    
+    stages {
+        stage('user input'){
+            steps{
+                script{
+                    println("${DOCKER_IMAGE_TAG}")
+                    def user_input = input message: 'Enter details:',
+                                            parameters:[
+                                                string(name:'git_url',description:'The url of git to clone',defaultValue:'https://github.com/uriel-be/dex_course.git'),
+                                                string(name:'branch',description:'git branch',defaultValue:'master'),
+                                                string(name:'workspace',description:'workspace of docker file',defaultValue:'Day3-Docker/homework_docker/web'),
+                                                string(name:'dockerfile_path',description:'path of dockerfile',defaultValue:'./Dockerfile'),
+                                                string(name:'image_name',description:'docker image name (must be in next frmat: <dockerhub_username>/<repo_name>)',defaultValue:'urielbe5/web')
+                                            ]
+                    if (user_input.git_url.trim()==''){
+                        error('git url can\'t be empty.')
+                    }
+                    if (user_input.image_name.trim()==''){
+                        error('image_name  can\'t be empty.')
+                    }
+                    if (user_input.workspace.trim() != ''){
+                        env.NEW_WORKSPACE = user_input.workspace
+                    }
+                    else{
+                        env.NEW_WORKSPACE='.'
+                    }
+                    env.GIT_URL=user_input.git_url
+                    env.BRANCH = user_input.branch
+                    env.DOCKER_FILE_PATH = user_input.dockerfile_path
+                    env.IMAGE_NAME=user_input.image_name
+                    
+                }
+                sh 'echo "$GIT_URL, $BRANCH, $DOCKER_FILE_PATH, $NEW_WORKSPACE, $IMAGE_NAME"' 
+            }
+        }
+        stage('clear workdir') {
+            steps {
+                deleteDir()
+            }
+        }
+        stage('checkout'){
+            steps{
+                git branch: env.BRANCH,
+                    url: env.GIT_URL
+                sh 'ls -l'
+            }
+        }
+        stage('Build Docker Image'){
+            steps{
+                dir(env.NEW_WORKSPACE) {
+                    sh 'pwd && ls -l'
+                    script{
+                        env.IMAGE_TAG=env.IMAGE_NAME+':'+env.JOB_NAME+'_'+env.BUILD_NUMBER
+                        docker.build("${IMAGE_NAME}", '-f $DOCKER_FILE_PATH .')
+                    }
+                    sh 'docker images'
+                    
+                }
+            }
+        }
+        stage('Docker Login'){
+            steps{
+                script{
+                    docker.withRegistry("${DOCKER_REGISTRY}","${DOCKER_CARDENTIALS_ID}"){
+                        echo 'Logged in to DockerHub'
+                    }
+                }
+            }
+        }
+        stage('Docker Push'){
+            steps{
+                script{
+                    docker.withRegistry("${DOCKER_REGISTRY}","${DOCKER_CARDENTIALS_ID}"){
+                        def image = docker.image("${IMAGE_NAME}") //retuen <${IMAGE_NAME}>:latest docker image
+                        image.push() // push <${IMAGE_NAME}>:latest docker image to DockerHub
+                        image.push("${DOCKER_IMAGE_TAG}")
+                    }
+                }
+            }
+        }
+    }
+    post{
+        always{
+            sh 'docker rmi ${IMAGE_NAME}:latest'
+            sh 'docker rmi ${IMAGE_NAME}:${DOCKER_IMAGE_TAG}'
+        }
+        success{
+            echo "${IMAGE_NAME}:${DOCKER_IMAGE_TAG} pushed successfully."
+        }
+        
+    }
+}

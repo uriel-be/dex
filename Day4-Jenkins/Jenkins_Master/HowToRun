@@ -1,0 +1,2 @@
+docker build -t jenkins_hw:1.1 .
+docker run -p 8081:8080 -v ./jenkins:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -d jenkins_hw:1.1
