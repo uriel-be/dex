@@ -1,0 +1,8 @@
+deplyment:
+  image: yanivomc/spring-music:latest
+  replicas: 2 
+  exposed_pord: 8080
+service:
+  internalPort: 8080
+  externalPort: 80
+ENV: prod

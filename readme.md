@@ -4,3 +4,4 @@
 2.  [Homework for Lesson 3](Day3-Docker/homework_docker/) - Docker
 3.  [Homework for Lesson 4](Day4-Jenkins/homework_jenkins/) - Jenkins
 4.  [Homework for Lesson 6](Day6-K8s/) - K8s
+5.  [Homework for Lesson 7](Day7-K8S_And_Helm/) - K8s And Helm
